@@ -27,10 +27,10 @@ const App = () => {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      
+
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

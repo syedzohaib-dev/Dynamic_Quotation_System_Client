@@ -6,6 +6,7 @@ import axios from 'axios';
 import { errorToast, successToast } from '../../utils/toast.js';
 
 const Login = () => {
+  const [role, setRole] = useState('')
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
@@ -68,13 +69,27 @@ const Login = () => {
         `${BASE_URL}${API_PATHS.AUTH.LOGIN}`,
         formData
       );
-      console.log(response?.data?.data?.user)
+      console.log("Role -->", response?.data?.data?.token)
+      setRole(response?.data?.data?.user?.role)
+
+      if (response?.data?.data?.user?.role) {
+        localStorage.setItem('role', response?.data?.data?.user?.role)
+      }
+
+       if (response?.data?.data?.token) {
+        localStorage.setItem('token', response?.data?.data?.token)
+      }
 
       successToast("Login successful!");
 
-      // setTimeout(() => {
-      //   navigate("/dashboard/user"); 
-      // }, 1500);
+      setFormData({
+        email: "",
+        password: "",
+      })
+
+      setTimeout(() => {
+        role === 'admin' ? navigate("/dashboard/admin") : navigate("/dashboard/user")
+      }, 1500);
 
     } catch (err) {
       console.log("Login Error:", err);
