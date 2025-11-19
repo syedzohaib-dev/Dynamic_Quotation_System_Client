@@ -1,6 +1,6 @@
 
 const LOCAL_BASE_URL = "http://localhost:3000"; 
-const PROD_BASE_URL = "";
+const PROD_BASE_URL = "https://dynamic-quotation-system-server.vercel.app";
 
 export const BASE_URL =
     window.location.hostname === "localhost" ? LOCAL_BASE_URL : PROD_BASE_URL;
