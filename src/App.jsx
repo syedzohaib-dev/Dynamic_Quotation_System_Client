@@ -19,12 +19,15 @@ import UserManagment from './pages/admin/UserManagment.jsx';
 import AdminDashboard from './pages/dashboard/AdminDashboard.jsx';
 import Setting from './pages/profile/Setting.jsx';
 import Notification from './pages/profile/Notification.jsx';
+import { errorToast, infoToast, successToast } from './utils/toast.js';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const userRole = 'user'
-
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
+      
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

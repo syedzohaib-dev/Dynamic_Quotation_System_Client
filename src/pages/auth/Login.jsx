@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper.js';
+import { API_PATHS, BASE_URL } from '../../utils/apiPath.js';
+import axios from 'axios';
+import { errorToast, successToast } from '../../utils/toast.js';
 
 const Login = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,20 +49,42 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  // Submit form + API integration
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formErrors = validateForm();
-
-    if (Object.keys(formErrors).length === 0) {
-      // Form is valid
-      setLoading(true);
-      console.log("Form submitted:", formData);
-      // Add your API call here
-      setLoading(false);
-    } else {
-      // Form has errors
+    if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      return;
+    }
+
+    if (loading) return;
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}${API_PATHS.AUTH.LOGIN}`,
+        formData
+      );
+      console.log(response?.data?.data?.user)
+
+      successToast("Login successful!");
+
+      // setTimeout(() => {
+      //   navigate("/dashboard/user"); 
+      // }, 1500);
+
+    } catch (err) {
+      console.log("Login Error:", err);
+
+      const message =
+        err.response?.data?.message || "Login failed. Try again.";
+
+      errorToast(message);
+    } finally {
+      setLoading(false);
     }
   };
 

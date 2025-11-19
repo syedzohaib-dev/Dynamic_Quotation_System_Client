@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper.js';
+import { API_PATHS, BASE_URL } from '../../utils/apiPath.js';
+import { errorToast, successToast } from '../../utils/toast.js';
+import axios from 'axios';
 
 const Signup = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         name: "",
         companyName: "",
@@ -58,20 +62,46 @@ const Signup = () => {
         return newErrors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const formErrors = validateForm();
-
-        if (Object.keys(formErrors).length === 0) {
-            // Form is valid
-            setLoading(true);
-            console.log("Form submitted:", formData);
-            // Add your API call here
-            setLoading(false);
-        } else {
-            // Form has errors
+        if (Object.keys(formErrors).length > 0) {
             setErrors(formErrors);
+            return;
+        }
+
+        if (loading) return;
+
+        setLoading(true);
+
+        try {
+            const response = await axios.post(
+                `${BASE_URL}${API_PATHS.AUTH.SIGNUP}`,
+                formData
+            );
+
+            successToast("Signup successful!");
+            setFormData({
+                name: "",
+                companyName: "",
+                email: "",
+                password: "",
+                confirmPassword: ""
+            });
+            setTimeout(() => {
+                navigate("/login");
+            }, 1500);
+
+        } catch (err) {
+            console.log("Signup Error:", err);
+
+            const message =
+                err.response?.data?.message || "Signup failed. Try again.";
+
+            errorToast(message);
+        } finally {
+            setLoading(false);
         }
     };
 
