@@ -23,7 +23,7 @@ import { errorToast, infoToast, successToast } from './utils/toast.js';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
-  const userRole = 'user'
+  const userRole = localStorage.getItem('role') // user || admin
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
