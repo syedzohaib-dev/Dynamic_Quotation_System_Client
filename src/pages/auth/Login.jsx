@@ -6,7 +6,6 @@ import axios from 'axios';
 import { errorToast, successToast } from '../../utils/toast.js';
 
 const Login = () => {
-  const [role, setRole] = useState('')
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
@@ -69,14 +68,13 @@ const Login = () => {
         `${BASE_URL}${API_PATHS.AUTH.LOGIN}`,
         formData
       );
-      console.log("Role -->", response?.data?.data?.token)
-      setRole(response?.data?.data?.user?.role)
+
 
       if (response?.data?.data?.user?.role) {
         localStorage.setItem('role', response?.data?.data?.user?.role)
       }
 
-       if (response?.data?.data?.token) {
+      if (response?.data?.data?.token) {
         localStorage.setItem('token', response?.data?.data?.token)
       }
 
@@ -88,7 +86,12 @@ const Login = () => {
       })
 
       setTimeout(() => {
-        role === 'admin' ? navigate("/dashboard/admin") : navigate("/dashboard/user")
+        const userRole = localStorage.getItem("role");
+        if (userRole === "admin") {
+          navigate("/dashboard/admin");
+        } else {
+          navigate("/dashboard/user");
+        }
       }, 1500);
 
     } catch (err) {
