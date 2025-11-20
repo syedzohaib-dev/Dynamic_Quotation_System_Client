@@ -7,13 +7,16 @@ import { BsLayoutWtf } from "react-icons/bs";
 import { MdHistory } from "react-icons/md";
 import { BsFillClipboard2MinusFill } from "react-icons/bs";
 import { FiUser } from "react-icons/fi";
+import { useAuth } from "../../context/AuthContext";
 
 const Sidebar = ({ role, isOpen, setIsOpen }) => {
+
+  const { user } = useAuth()
 
   const menus = {
     user: [
       { name: "Quotation", path: "createinvoice", icon: <BsFillClipboard2MinusFill /> },
-      { name: "Client List", path: "clientlist", icon: <HiUsers /> },
+      // { name: "Client List", path: "clientlist", icon: <HiUsers /> },
       { name: "Templates", path: "templates", icon: <BsLayoutWtf /> },
       { name: "View History", path: "history", icon: <MdHistory /> },
     ],
@@ -61,7 +64,7 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
           </div>
 
           <div>
-            <p className="text-[1rem] font-medium text-black">Brown Matin</p>
+            <p className="text-[1rem] font-medium text-black">{user?.name}</p>
             <p className="text-[0.8rem] text-gray-600">admin</p>
           </div>
         </div>
@@ -132,8 +135,8 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
             </div>
 
             <span className="w-full flex flex-col text-black">
-              <p className="text-[0.95rem]">Brown Matin</p>
-              <p className="text-[0.75rem]">admin</p>
+              <p className="text-[0.95rem]">{user?.name}</p>
+              <p className="text-[0.75rem]">{role}</p>
             </span>
           </NavLink>
         </div>

@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const PriceSummary = ({ handlePrevious, handleNext }) => {
-    const [formData, setFormData] = useState({
-        subTotal: '',
-        totalDiscountApplied: '',
-        totalTaxApplied: '',
-        grandTotal: '',
+const PriceSummary = ({ handlePrevious, products, updateSummary, priceSummary, onFinalSubmit }) => {
+    const [summary, setSummary] = useState({
+        subTotal: 0,
+        totalDiscountApplied: 0,
+        totalTaxApplied: 0,
+        grandTotal: 0,
     });
+    useEffect(() => {
+        const subTotal = products.reduce((sum, p) => sum + p.subtotal, 0);
+        const totalDiscount = products.reduce((sum, p) => sum + p.discountAmount, 0);
+        const totalTax = products.reduce((sum, p) => sum + p.taxAmount, 0);
+        const grandTotal = subTotal - totalDiscount + totalTax;
+
+        const calculated = {
+            subTotal,
+            totalDiscountApplied: totalDiscount,
+            totalTaxApplied: totalTax,
+            grandTotal,
+        };
+        setSummary(calculated)
+        updateSummary(calculated)
+    }, [products]);
 
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
+        setSummary({
+            ...summary,
             [name]: value
-        }));
+        });
 
         if (errors[name]) {
             setErrors(prev => ({
@@ -25,34 +40,31 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
         }
     };
 
-    const validateForm = () => {
-        const newErrors = {};
+    // const validateForm = () => {
+    //     const newErrors = {};
 
-        if (!formData.subTotal.trim()) newErrors.subTotal = 'Sub Total is required';
-        if (!formData.totalDiscountApplied.trim()) newErrors.totalDiscountApplied = 'Total Discount is required';
-        if (!formData.totalTaxApplied.trim()) newErrors.totalTaxApplied = 'Total Tax is required';
-        if (!formData.grandTotal.trim()) newErrors.grandTotal = 'Grand Total is required';
+    //     if (!formData.subTotal.trim()) newErrors.subTotal = 'Sub Total is required';
+    //     if (!formData.totalDiscountApplied.trim()) newErrors.totalDiscountApplied = 'Total Discount is required';
+    //     if (!formData.totalTaxApplied.trim()) newErrors.totalTaxApplied = 'Total Tax is required';
+    //     if (!formData.grandTotal.trim()) newErrors.grandTotal = 'Grand Total is required';
 
-        return newErrors;
-    };
+    //     return newErrors;
+    // };
 
-    const handleSubmit = (e, type) => {
-        e.preventDefault();
-        const formErrors = validateForm();
+    // const handleSubmit = (e, type) => {
+    //     e.preventDefault();
+    //     const formErrors = validateForm();
 
-        if (Object.keys(formErrors).length > 0) {
-            setErrors(formErrors);
-            return;
-        }
+    //     if (Object.keys(formErrors).length > 0) {
+    //         setErrors(formErrors);
+    //         return;
+    //     }
+    //     setData(formData);
 
-        // Submit logic here
-        console.log('Form submitted:', formData);
-        if (type === 'next') {
-            // Next step logic
-        } else {
-            // Preview logic
-        }
-    };
+    //     // Submit logic here
+    //     console.log('Form submitted:', formData);
+
+    // };
 
     return (
         <div className="p-4 h-full">
@@ -67,8 +79,9 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
                             <input
                                 type="number"
                                 name="subTotal"
-                                value={formData.subTotal}
-                                onChange={handleChange}
+                                value={priceSummary.subTotal}
+                                // onChange={handleChange}
+                                readOnly
                                 placeholder="Add Calculated"
                                 className={`w-full p-1 border rounded-lg hover:border-blue-400 outline-none  ${errors.subTotal ? 'border-red-400' : 'border-gray-300'
                                     }`}
@@ -87,8 +100,9 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
                             <input
                                 type="number"
                                 name="totalDiscountApplied"
-                                value={formData.totalDiscountApplied}
-                                onChange={handleChange}
+                                value={priceSummary.totalDiscountApplied}
+                                // onChange={handleChange}
+                                readOnly
                                 placeholder="Add Calculated"
                                 className={`w-full p-1 border rounded-lg hover:border-blue-400 outline-none transition ${errors.totalDiscountApplied ? 'border-red-500' : 'border-gray-300'
                                     }`}
@@ -109,8 +123,9 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
                             <input
                                 type="number"
                                 name="totalTaxApplied"
-                                value={formData.totalTaxApplied}
-                                onChange={handleChange}
+                                value={priceSummary.totalTaxApplied}
+                                // onChange={handleChange}
+                                readOnly
                                 placeholder="Add Calculated"
                                 className={`w-full p-1 border rounded-lg hover:border-blue-400 outline-none  ${errors.totalTaxApplied ? 'border-red-400' : 'border-gray-300'
                                     }`}
@@ -129,8 +144,9 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
                             <input
                                 type="number"
                                 name="grandTotal"
-                                value={formData.grandTotal}
-                                onChange={handleChange}
+                                value={priceSummary.grandTotal}
+                                // onChange={handleChange}
+                                readOnly
                                 placeholder="Add Calculated"
                                 className={`w-full p-1 border rounded-lg hover:border-blue-400 outline-none transition ${errors.grandTotal ? 'border-red-500' : 'border-gray-300'
                                     }`}
@@ -157,11 +173,11 @@ const PriceSummary = ({ handlePrevious, handleNext }) => {
                         Preview
                     </button>
                     <button
-                        type="button"
-                        onClick={(e) => handleSubmit(e, 'next')}
+                        type="submit"
+                        onClick={onFinalSubmit}
                         className="flex-1 py-2 bg-black text-white rounded-lg  transition font-medium"
                     >
-                        Next
+                        Submit
                     </button>
                 </div>
             </form>

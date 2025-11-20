@@ -21,51 +21,58 @@ import Setting from './pages/profile/Setting.jsx';
 import Notification from './pages/profile/Notification.jsx';
 import { errorToast, infoToast, successToast } from './utils/toast.js';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { QuotationProvider } from './context/QuotationContext.jsx';
 
 const App = () => {
   const userRole = localStorage.getItem('role') // user || admin
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
+      <AuthProvider>
+        <QuotationProvider>
 
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/setting" element={<Setting />} />
-          <Route path="/notification" element={<Notification />} />
+          <Toaster position="top-center" reverseOrder={false} />
+
+          <Router>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/setting" element={<Setting />} />
+              <Route path="/notification" element={<Notification />} />
 
 
-          {
-            userRole === 'user' &&
-            (
-              <Route path="/dashboard/user" element={<UserDashboard role={userRole} />}>
-                <Route index element={<CreateInvoice />} />
-                <Route path='createinvoice' element={<CreateInvoice />} />
-                <Route path='clientlist' element={<ClientList />} />
-                <Route path='templates' element={<Templates />} />
-                <Route path='history' element={<History />} />
-              </Route>
-            )
-          };
-          {
-            userRole === 'admin' &&
-            (
-              <Route path="/dashboard/admin" element={<AdminDashboard role={userRole} />}>
-                <Route index element={<Dashboard />} />
-                <Route path='dashboard' element={<Dashboard />} />
-                <Route path='createinvoice' element={<CreateInvoice />} />
-                <Route path='usermanagment' element={<UserManagment />} />
-                <Route path='templates' element={<Templates />} />
-                <Route path='history' element={<ClientList />} />
-              </Route>
-            )
-          }
+              {
+                userRole === 'user' &&
+                (
+                  <Route path="/dashboard/user" element={<UserDashboard role={userRole} />}>
+                    <Route index element={<CreateInvoice />} />
+                    <Route path='createinvoice' element={<CreateInvoice />} />
+                    <Route path='clientlist' element={<ClientList />} />
+                    <Route path='templates' element={<Templates />} />
+                    <Route path='history' element={<History />} />
+                  </Route>
+                )
+              };
+              {
+                userRole === 'admin' &&
+                (
+                  <Route path="/dashboard/admin" element={<AdminDashboard role={userRole} />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path='dashboard' element={<Dashboard />} />
+                    <Route path='createinvoice' element={<CreateInvoice />} />
+                    <Route path='usermanagment' element={<UserManagment />} />
+                    <Route path='templates' element={<Templates />} />
+                    <Route path='history' element={<ClientList />} />
+                  </Route>
+                )
+              }
 
-        </Routes>
-      </Router>
+            </Routes>
+          </Router>
+        </QuotationProvider>
+      </AuthProvider>
     </>
 
   )

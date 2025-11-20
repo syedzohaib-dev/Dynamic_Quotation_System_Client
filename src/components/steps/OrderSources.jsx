@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const OrderSources = ({ handlePrevious, handleNext }) => {
+const OrderSources = ({ handlePrevious, handleNext, data, setData }) => {
   const today = new Date().toISOString().split("T")[0];
 
   const [formData, setFormData] = useState({
@@ -21,10 +21,10 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value
-    }));
+    });
 
     if (errors[name]) {
       setErrors((prev) => ({
@@ -80,7 +80,11 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
       return;
     }
 
-    console.log("Form submitted:", formData);
+    setData(formData);   // save to parent
+    console.log("Form 2 submitted:", formData);
+    if (type === 'next') {
+      handleNext();
+    };
   };
 
   return (
@@ -150,8 +154,29 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
               onChange={handleChange}
               className={`w-full p-1 border rounded-lg outline-none ${errors.city ? "border-red-400" : "border-gray-300"}`}
             >
-              <option value="">Select city</option>
-              <option value="karachi">Karachi</option>
+              <option value="select">select</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Multan">Multan</option>
+              <option value="Peshawar">Peshawar</option>
+              <option value="Quetta">Quetta</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Sialkot">Sialkot</option>
+              <option value="Gujranwala">Gujranwala</option>
+              <option value="Sukkur">Sukkur</option>
+              <option value="Larkana">Larkana</option>
+              <option value="Bahawalpur">Bahawalpur</option>
+              <option value="Sargodha">Sargodha</option>
+              <option value="Abbottabad">Abbottabad</option>
+              <option value="Mardan">Mardan</option>
+              <option value="Swat">Swat</option>
+              <option value="Kohat">Kohat</option>
+              <option value="Mirpur">Mirpur</option>
+              <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+              <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
             </select>
             <div className="h-5">
               {errors.city && <p className="text-red-500 text-xs">{errors.city}</p>}
@@ -221,8 +246,6 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
             >
               <option value="">Select Method</option>
               <option value="cash">Cash</option>
-              <option value="online">Online</option>
-              <option value="card">Card</option>
             </select>
             <div className="h-5">
               {errors.paymentMethod && <p className="text-red-500 text-xs">{errors.paymentMethod}</p>}
@@ -236,7 +259,7 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
               name="advance"
               value={formData.advance}
               onChange={handleChange}
-              placeholder="Advance payment"
+              placeholder="30% Mandatory"
               className={`w-full p-1 border rounded-lg outline-none ${errors.advance ? "border-red-400" : "border-gray-300"}`}
             />
             <div className="h-5">
@@ -248,7 +271,7 @@ const OrderSources = ({ handlePrevious, handleNext }) => {
 
         {/* Special Instruction */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Special Instruction</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Terms & Conditions</label>
           <input
             name="termsAndCondition"
             value={formData.termsAndCondition}

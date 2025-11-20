@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
 
-const AddProduct = ({ handlePrevious, handleNext }) => {
+
+const AddProduct = ({ handlePrevious, handleNext, products, setProducts }) => {
   const [formData, setFormData] = useState({
     productName: "",
     category: "",
@@ -35,31 +37,75 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.productName.trim()) newErrors.productName = "Product name required";
-    if (!formData.category.trim()) newErrors.category = "Category required";
-    if (!formData.unitMeasure.trim()) newErrors.unitMeasure = "Unit measure required";
-    if (!formData.quantity.trim()) newErrors.quantity = "Quantity required";
-    if (!formData.city.trim()) newErrors.city = "City required";
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Phone number required";
-    if (!formData.unitPrice.trim()) newErrors.unitPrice = "Unit price required";
-    if (!formData.discountApplied.trim()) newErrors.discountApplied = "Discount required";
-    if (!formData.taxApplied.trim()) newErrors.taxApplied = "Tax required";
+
+    if (!formData.productName) newErrors.productName = "Product name required";
+    if (!formData.category) newErrors.category = "Category required";
+    if (!formData.unitMeasure) newErrors.unitMeasure = "Unit measure required";
+    if (!formData.quantity) newErrors.quantity = "Quantity required";
+    if (!formData.city) newErrors.city = "City required";
+    if (!formData.phoneNumber) newErrors.phoneNumber = "Phone number required";
+    if (!formData.unitPrice) newErrors.unitPrice = "Unit price required";
+    if (!formData.discountApplied) newErrors.discountApplied = "Discount required";
+    if (!formData.taxApplied) newErrors.taxApplied = "Tax required";
 
     return newErrors;
   };
 
-  const handleSubmit = (e, type) => {
-    e.preventDefault();
+  const calculateProduct = () => {
+    const qty = Number(formData.quantity);
+    const price = Number(formData.unitPrice);
+    const discount = Number(formData.discountApplied || 0);
+    const tax = Number(formData.taxApplied || 0);
 
+    const subtotal = qty * price;
+    const discountAmount = (subtotal * discount) / 100;
+    const taxAmount = (subtotal * tax) / 100;
+    const finalTotal = subtotal - discountAmount + taxAmount;
+
+    return {
+      ...formData,
+      quantity: qty,
+      unitPrice: price,
+      discountApplied: discount,
+      taxApplied: tax,
+      subtotal,
+      discountAmount,
+      taxAmount,
+      finalTotal,
+    };
+  };
+
+  const handlePush = () => {
     const formErrors = validateForm();
-
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       return;
     }
 
-    console.log("Form Submitted", formData);
+    const calculatedProduct = calculateProduct();
+    setProducts((prev) => [...prev, calculatedProduct]);
+    console.log('product add hoa')
+    // Reset form
+    setFormData({
+      productName: "",
+      category: "", 
+      unitMeasure: "",
+      quantity: "",
+      city: "",
+      phoneNumber: "",
+      unitPrice: "",
+      discountApplied: "", 
+      taxApplied: "",
+    });
   };
+
+  // const handleNext = () => {
+  //   if (products.length === 0) {
+  //     alert("Please add at least one product");
+  //     return;
+  //   }
+  //   nextStep();
+  // };
 
   return (
     <div className="p-4">
@@ -95,10 +141,26 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
               className={`w-full p-2 border rounded-lg outline-none ${errors.category ? "border-red-400" : "border-gray-300"
                 }`}
             >
-              <option value="">Select</option>
-              <option value="Construction">Construction</option>
-              <option value="Tools">Tools</option>
-              <option value="Wood">Wood</option>
+              <option value="">Select Category</option>
+              <option value="electronics">Electronics</option>
+              <option value="appliances">Appliances</option>
+              <option value="furniture">Furniture</option>
+              <option value="clothing">Clothing</option>
+              <option value="fashion-accessories">Fashion Accessories</option>
+              <option value="mobile-accessories">Mobile Accessories</option>
+              <option value="computer-hardware">Computer Hardware</option>
+              <option value="office-supplies">Office Supplies</option>
+              <option value="tools">Tools</option>
+              <option value="machinery">Machinery</option>
+              <option value="automotive">Automotive</option>
+              <option value="construction-materials">Construction Materials</option>
+              <option value="home-decor">Home Decor</option>
+              <option value="kitchenware">Kitchenware</option>
+              <option value="beauty-products">Beauty Products</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="software">Software</option>
+              <option value="services">Services</option>
+              <option value="custom-item">Custom Item</option>
             </select>
             <div className="h-5">
               {errors.category && (
@@ -120,9 +182,29 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
               className={`w-full p-2 border rounded-lg outline-none ${errors.unitMeasure ? "border-red-400" : "border-gray-300"
                 }`}
             >
-              <option value="">Select Unit</option>
-              <option value="pcs">Pcs</option>
-              <option value="kg">Kg</option>
+              <option value="">Select Unit Measure</option>
+              <option value="piece">Piece</option>
+              <option value="box">Box</option>
+              <option value="carton">Carton</option>
+              <option value="packet">Packet</option>
+              <option value="set">Set</option>
+              <option value="pair">Pair</option>
+
+              <option value="kg">Kilogram (kg)</option>
+              <option value="g">Gram (g)</option>
+              <option value="mg">Milligram (mg)</option>
+
+              <option value="liter">Liter (L)</option>
+              <option value="ml">Milliliter (mL)</option>
+
+              <option value="meter">Meter (m)</option>
+              <option value="cm">Centimeter (cm)</option>
+              <option value="mm">Millimeter (mm)</option>
+              <option value="foot">Foot (ft)</option>
+              <option value="inch">Inch (in)</option>
+
+              <option value="roll">Roll</option>
+              <option value="bundle">Bundle</option>
             </select>
             <div className="h-5">
               {errors.unitMeasure && (
@@ -163,9 +245,28 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
               className={`w-full p-2 border rounded-lg outline-none ${errors.city ? "border-red-400" : "border-gray-300"
                 }`}
             >
-              <option value="">Select City</option>
-              <option value="Houston">Houston</option>
               <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Multan">Multan</option>
+              <option value="Peshawar">Peshawar</option>
+              <option value="Quetta">Quetta</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Sialkot">Sialkot</option>
+              <option value="Gujranwala">Gujranwala</option>
+              <option value="Sukkur">Sukkur</option>
+              <option value="Larkana">Larkana</option>
+              <option value="Bahawalpur">Bahawalpur</option>
+              <option value="Sargodha">Sargodha</option>
+              <option value="Abbottabad">Abbottabad</option>
+              <option value="Mardan">Mardan</option>
+              <option value="Swat">Swat</option>
+              <option value="Kohat">Kohat</option>
+              <option value="Mirpur">Mirpur</option>
+              <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+              <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
             </select>
             <div className="h-5">
               {errors.city && <p className="text-red-500 text-xs">{errors.city}</p>}
@@ -198,7 +299,7 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
           <div>
             <label className="block text-sm mb-1">Unit Price</label>
             <input
-              type="text"
+              type="number"
               name="unitPrice"
               value={formData.unitPrice}
               onChange={handleChange}
@@ -217,7 +318,7 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
           <div>
             <label className="block text-sm mb-1">Discount Applied</label>
             <input
-              type="text"
+              type="number"
               name="discountApplied"
               value={formData.discountApplied}
               onChange={handleChange}
@@ -237,7 +338,7 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
         <div className="w-full">
           <label className="block text-sm mb-1">Tax Applied</label>
           <input
-            type="text"
+            type="number"
             name="taxApplied"
             value={formData.taxApplied}
             onChange={handleChange}
@@ -256,6 +357,15 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
         <div className="flex gap-4 pt-3">
           <button
             type="button"
+            className="flex w-full justify-center items-center py-2 gap-1 rounded-lg bg-gray-900 text-white"
+            onClick={handlePush}
+          >
+            <IoMdAdd className="text-2xl" /> Add Product
+          </button>
+        </div>
+        <div className="flex gap-4 pt-2">
+          <button
+            type="button"
             className="flex-1 py-2 rounded-lg bg-gray-900 text-white"
             onClick={(e) => handlePrevious(e, "prev")}
           >
@@ -263,10 +373,10 @@ const AddProduct = ({ handlePrevious, handleNext }) => {
           </button>
           <button
             type="button"
-            onClick={(e) => handleSubmit(e, "next")}
+            onClick={(e) => handleNext(e, "next")}
             className="flex-1 py-2 rounded-lg bg-gray-900 text-white"
           >
-            Preview
+            Next
           </button>
         </div>
       </form>

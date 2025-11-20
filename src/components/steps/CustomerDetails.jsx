@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const CustomerDetails = ({ handlePrevious, handleNext }) => {
+const CustomerDetails = ({ handlePrevious, handleNext, data, setData }) => {
   const [formData, setFormData] = useState({
     customerName: '',
     companyName: '',
@@ -17,10 +17,10 @@ const CustomerDetails = ({ handlePrevious, handleNext }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value
-    }));
+    });
 
     if (errors[name]) {
       setErrors(prev => ({
@@ -58,11 +58,12 @@ const CustomerDetails = ({ handlePrevious, handleNext }) => {
       setErrors(formErrors);
       return;
     }
+    setData(formData);   // save to parent
+    // handleNext();
 
-    // Submit logic here
-    console.log('Form submitted:', formData);
+    console.log('Form 1 submitted:', formData);
     if (type === 'next') {
-      handleNext()
+      handleNext();
     }
   };
 

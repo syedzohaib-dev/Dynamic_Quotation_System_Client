@@ -3,12 +3,15 @@ import Sidebar from "../../components/common/Sidebar.jsx";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 
 const AdminDashboard = ({ role }) => {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
   const [allUser, setAllUser] = useState([])
+
+  const { user } = useAuth();
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -45,7 +48,7 @@ const AdminDashboard = ({ role }) => {
             />
             <div className="flex flex-col">
               <span className="text-gray-800 font-semibold text-sm sm:text-base flex">
-                Zohaib Akhter
+                {user?.name}
               </span>
               <span className="text-gray-500 text-xs sm:text-sm flex ">{role}</span>
             </div>
