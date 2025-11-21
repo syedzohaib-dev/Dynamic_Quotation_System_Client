@@ -1,6 +1,6 @@
 import React from "react";
 import { FaFile, FaList } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoClipboard } from "react-icons/io5";
 import { HiUsers } from "react-icons/hi";
 import { BsLayoutWtf } from "react-icons/bs";
@@ -10,6 +10,20 @@ import { FiUser } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 
 const Sidebar = ({ role, isOpen, setIsOpen }) => {
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    // Local storage clear
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
+
+    // Optional: saari keys ek saath clear karna ho to:
+    // localStorage.clear();
+
+    // Redirect to login
+    navigate("/login");
+  };
 
   const { user } = useAuth()
 
@@ -87,31 +101,38 @@ const Sidebar = ({ role, isOpen, setIsOpen }) => {
             </NavLink>
           ))}
 
-          <button className="flex items-center  justify-center my-4 mx-auto px-16 py-2 rounded-lg bg-black text-white" onClick={() => console.log('Login chala')}>
+          <button className="flex items-center  justify-center my-4 mx-auto px-16 py-2 rounded-lg bg-black text-white" onClick={handleLogout}>
             Logout
           </button>
         </div>
       ) : (
         // NORMAL SIDEBAR FOR USER & ADMIN
-        <nav className="flex-1 py-4">
-          <div className="space-y-2 px-4">
-            {links.map((link, index) => (
-              <NavLink
-                to={link.path}
-                key={index}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 my-3 px-4 py-2 text-[1rem] rounded-lg transition ${isActive
-                    ? "bg-black text-white"
-                    : "bg-white text-black hover:bg-gray-100"
-                  }`
-                }
-              >
-                {link.icon}
-                {link.name}
-              </NavLink>
-            ))}
-          </div>
-        </nav>
+        <>
+          <nav className="flex-1 py-4">
+            <div className="space-y-2 px-4">
+              {links.map((link, index) => (
+                <NavLink
+                  to={link.path}
+                  key={index}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 my-3 px-4 py-2 text-[1rem] rounded-lg transition ${isActive
+                      ? "bg-black text-white"
+                      : "bg-white text-black hover:bg-gray-100"
+                    }`
+                  }
+                >
+                  {link.icon}
+                  {link.name}
+                </NavLink>
+              ))}
+
+            </div>
+
+          </nav>
+          <button className="flex items-center  justify-center my-4 mx-auto px-16 py-2 rounded-lg bg-black text-white" onClick={handleLogout}>
+            Logout
+          </button>
+        </>
       )}
 
       {/* BOTTOM PROFILE (user/admin only) */}

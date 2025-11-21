@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, isSubmitting } from 'react';
 
 const PriceSummary = ({ handlePrevious, products, updateSummary, priceSummary, onFinalSubmit }) => {
     const [summary, setSummary] = useState({
@@ -173,11 +173,12 @@ const PriceSummary = ({ handlePrevious, products, updateSummary, priceSummary, o
                         Preview
                     </button>
                     <button
+                        disabled={isSubmitting}
                         type="submit"
                         onClick={onFinalSubmit}
                         className="flex-1 py-2 bg-black text-white rounded-lg  transition font-medium"
                     >
-                        Submit
+                        {isSubmitting ? "Submitting..." : "Submit"}
                     </button>
                 </div>
             </form>

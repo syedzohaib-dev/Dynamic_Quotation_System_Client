@@ -15,6 +15,7 @@ export const API_PATHS = {
     QUOTATION: {
         CREATE: "/api/v1/quotation/create",
         GET_ALL: "/api/v1/quotation/get-all",
+        GET_SINGLE: "/api/v1/quotation",
     }
 
 

@@ -12,9 +12,12 @@ import { useState } from 'react';
 
 
 const History = () => {
+    const { singleQuotation } = useQuotation();
+    const { getQuotationById } = useQuotation()
     const [openInvoice, setOpenInvoice] = useState(false);
-    const handleOpenInvoice = () => {
+    const handleOpenInvoice = (id) => {
         setOpenInvoice(true);
+        getQuotationById(id)
     };
 
     const handleClose = () => {
@@ -62,16 +65,16 @@ const History = () => {
 
     return (
         <>
-            <InvoiceModal isOpen={openInvoice} onClose={handleClose} />
+            <InvoiceModal isOpen={openInvoice} onClose={handleClose} data={singleQuotation} />
             <div className="min-h-screen bg-white p-6">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
 
 
                     {/* Statistics Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="w-full flex flex-wrap justify-center gap-6 mb-8">
                         {/* Total Quotation */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                        <div className="bg-white rounded-2xl shadow-sm border min-w-50 w-70 border-gray-200 p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                     <span className="text-blue-600 text-lg"><FaClipboardList /></span>
@@ -83,7 +86,7 @@ const History = () => {
                         </div>
 
                         {/* Approved */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                        <div className="bg-white rounded-2xl shadow-sm border min-w-50 w-70 border-gray-200 p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                                     <span className="text-green-600 text-lg"><TiTick /></span>
@@ -99,7 +102,7 @@ const History = () => {
                         </div>
 
                         {/* Pending */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                        <div className="bg-white rounded-2xl shadow-sm border min-w-50 w-70 border-gray-200 p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                                     <span className="text-red-600 text-lg"><MdAccessTime /></span>
@@ -111,7 +114,7 @@ const History = () => {
                         </div>
 
                         {/* Reject */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                        <div className="bg-white rounded-2xl shadow-sm border min-w-50 w-70 border-gray-200 p-6">
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                                     <span className="text-red-600 text-lg"><RiFileCloseLine /></span>
@@ -124,7 +127,7 @@ const History = () => {
                     </div>
 
                     {/* Table Section */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-auto">
                         {/* Table Container with Scroll */}
                         <div className="">
                             <table className="w-full min-w-[400px]">
@@ -181,7 +184,7 @@ const History = () => {
                                                 <StatusBadge status={item.status} />
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <button onClick={() => handleOpenInvoice(true)} className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
+                                                <button onClick={() => handleOpenInvoice(item._id)} className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
                                                     View Invoice
                                                 </button>
                                             </td>

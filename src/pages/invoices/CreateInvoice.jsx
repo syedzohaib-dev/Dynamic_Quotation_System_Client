@@ -14,6 +14,7 @@ import { BASE_URL } from '../../utils/apiPath.js';
 import { successToast } from '../../utils/toast.js';
 
 const CreateInvoice = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState('Customer Details');
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
@@ -77,8 +78,10 @@ const CreateInvoice = () => {
     };
 
     const handleCreateQuotation = async (e) => {
+        if (isSubmitting) return;
         e.preventDefault()
         try {
+            setIsSubmitting(true);
             const userId = localStorage.getItem('userId')
             const payload = {
                 customerDetails,
@@ -217,7 +220,7 @@ const CreateInvoice = () => {
                                     products={products}
                                     updateSummary={updateSummary} // summary parent ko milegi
                                     priceSummary={priceSummary}
-                                    // prevStep={prevStep}
+                                    isSubmitting={isSubmitting}
                                     onFinalSubmit={handleCreateQuotation} // final button yahan se call hoga 
                                 />}
                         </div>

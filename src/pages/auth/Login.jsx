@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper.js';
 import { API_PATHS, BASE_URL } from '../../utils/apiPath.js';
 import axios from 'axios';
 import { errorToast, successToast } from '../../utils/toast.js';
+import { Navigate } from "react-router-dom";
 
-const Login = () => {
+
+const Login = ({ setUserRole }) => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
@@ -89,12 +91,16 @@ const Login = () => {
 
       setTimeout(() => {
         const userRole = localStorage.getItem("role");
-        if (userRole === "admin") {
-          navigate("/dashboard/admin");
-        } else {
-          navigate("/dashboard/user");
+        if (response?.data?.data?.user?.role) {
+          setUserRole(response?.data?.data?.user?.role); // <-- VERY IMPORTANT
         }
-      }, 1500);
+        if (response?.data?.data?.user?.role === "admin") {
+          navigate("/dashboard/admin");   // Correct
+        } else {
+          navigate("/dashboard/user");    // Correct
+        }
+
+      }, 1000)
 
     } catch (err) {
       console.log("Login Error:", err);

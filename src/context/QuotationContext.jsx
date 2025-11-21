@@ -11,6 +11,7 @@ export const QuotationProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
 
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem('userId')
 
     const getQuotations = async () => {
         try {
@@ -40,26 +41,30 @@ export const QuotationProvider = ({ children }) => {
     // ===========================
     //  GET SINGLE QUOTATION
     // ===========================
-    // const getQuotationById = async (id) => {
-    //     try {
-    //         setLoading(true);
+    const getQuotationById = async (id) => {
+        try {
+            setLoading(true);
 
-    //         const res = await axios.get(
-    //             `http://localhost:3000/api/v1/quotation/${id}`,
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                 },
-    //             }
-    //         );
+            const res = await axios.get(
+                `${BASE_URL}${API_PATHS.QUOTATION.GET_SINGLE}/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
-    //         // setSingleQuotation(res.data.data);
-    //     } catch (error) {
-    //         console.error("Failed to fetch single quotation:", error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+            setSingleQuotation(res.data.data);
+            console.log(res?.data?.data)
+        } catch (error) {
+            console.error("Failed to fetch single quotation:", error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+   
+        
+
 
     // ===========================
     // EXPORT CONTEXT VALUE
@@ -71,7 +76,7 @@ export const QuotationProvider = ({ children }) => {
                 singleQuotation,
                 loading,
                 getQuotations,
-                // getQuotationById,
+                getQuotationById,
             }}
         >
             {children}

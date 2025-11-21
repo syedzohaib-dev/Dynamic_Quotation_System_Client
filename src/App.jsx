@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useSearchParams,
 } from 'react-router-dom';
 import Signup from './pages/auth/Signup';
 import Login from './pages/auth/Login';
@@ -25,7 +26,11 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { QuotationProvider } from './context/QuotationContext.jsx';
 
 const App = () => {
-  const userRole = localStorage.getItem('role') // user || admin
+  const [userRole, setUserRole] = useState(null)
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    if (role) setUserRole(role);
+  }, []);
   return (
     <>
       <AuthProvider>
@@ -35,9 +40,9 @@ const App = () => {
 
           <Router>
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<Login setUserRole={setUserRole} />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login setUserRole={setUserRole} />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/setting" element={<Setting />} />
               <Route path="/notification" element={<Notification />} />
